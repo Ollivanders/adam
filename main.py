@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from distutils.dir_util import copy_tree
 import json
 import os
@@ -20,18 +22,20 @@ INDEPENDENT_SECTIONS = [
     "logo"
 ]
 
+EXAMPLE_DOCS_URL = "https://github.com/Ollivanders/adam/trunk/example_docs"
+
 
 class DocsGeneration():
     def __init__(
-        self,
-        docs_dir: Path = Path(os.getcwd()) / "docs",
-        filepath=None,
-        filename="README",
-        sections=None,
-        make_copy=False,
-        make_logo=False,
-        example_docs=False,
-        ignore_dir_in_tree=[],
+            self,
+            docs_dir: Path,
+            filepath=None,
+            filename="README",
+            sections=None,
+            make_copy=False,
+            make_logo=False,
+            example_docs=False,
+            ignore_dir_in_tree=[],
     ):
         self.docs_dir = docs_dir
         self.filename = filename
@@ -48,6 +52,7 @@ class DocsGeneration():
         # read in directory and contents if it already exists
         # else create and establish, have a check from the user here though that this is defo wanted
         if not self.docs_dir.exists() or example_docs:
+            # TODO check user really wants to do this
             self.init_docs_dir()
 
         if sections:
@@ -95,16 +100,25 @@ class DocsGeneration():
         self.write_to_file(self.docs_dir / "logo.txt", logo_str)
 
     def init_docs_dir(self, use_example=True):
+        if self.docs_dir.exists():
+            shutil.rmtree(self.docs_dir)
         if use_example:
-            copy_tree(str(EXAMPLE_DIR), str(self.docs_dir))
+            sp.run(
+                ["cd", str(self.docs_dir.parent), "&&", "svn", "checkout", EXAMPLE_DOCS_URL],
+                check=True,
+            )
+            os.rename(self.docs_dir.parent / "example_docs", self.docs_dir)
+        # copy_tree(str(EXAMPLE_DIR), str(self.docs_dir))
         # (docs_dir / "docs" / "sections").mkdir(parents=True, exist_ok=False)
         # (docs_dir / "docs" / "images").mkdir(parents=True, exist_ok=False)
 
     def make_project_structure(self):
         project_structure_str = "## Project Structure\n\n"
         project_structure_str += "```"
-        tree_command = ["tree", "-I"]
-        tree_command.extend(self.ignore_dir_in_tree)
+        tree_command = ["tree"]
+        if self.ignore_dir_in_tree:
+            tree_command.append("-I")
+            tree_command.extend(self.ignore_dir_in_tree)
         result = sp.run(
             tree_command,
             check=True,
@@ -170,15 +184,14 @@ class DocsGeneration():
 
 def test():
     docs_dir = Path(os.getcwd()) / "docsTest"
-    if docs_dir.exists():
-        shutil.rmtree(docs_dir)
+
     generator = DocsGeneration(docs_dir, filename="TEST", make_logo=True)
     generator.generate_file()
 
 
 @ click.command()
 @ click.option("--filename", default="README")
-@ click.option("--docs-dir", default="./docs", type=Path)
+@ click.option("--docs-dir", default=Path(os.getcwd()) / "docs", type=Path)
 @ click.option("--make-copy", default=False)
 @ click.option("--make-logo", default=False)
 @ click.option("-I", "--ignore-dir-in-tree", multiple=True)
@@ -189,4 +202,5 @@ def main(**kwargs):
 
 
 if __name__ == "__main__":
+    print("Running adam's doc generation")
     main()

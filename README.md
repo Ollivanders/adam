@@ -17,9 +17,23 @@ You may wish to do this for a few reasons:
 
 ## Quick start
 
-- Copy the project and copy the contents of docs to your own.
-- Alter the contents of sections to build up a README
-- Use the docs/readme.sh file to specify the arrays to use in it
+an alias for you to run it from anywhere:
+```
+    alias docgen="python3 <(curl https://raw.githubusercontent.com/Ollivanders/adam/master/main.py)"
+```
+
+```
+Usage: main.py [OPTIONS]
+
+Options:
+  --filename TEXT
+  --docs-dir PATH
+  --make-copy BOOLEAN
+  --make-logo BOOLEAN
+  -I, --ignore-dir-in-tree TEXT
+  --example-docs BOOLEAN         regenerate example docs even if they exist
+  --help                         Show this message and exit.
+```
 
 ```
 # in order to generate a test example to display its use
@@ -30,6 +44,10 @@ python3 main.py
 ```
 
 ### Additional features
+Currently you need svn, this is to get the example docs directory. Fixed in the future.
+```
+brew install svn
+```
 
 To use the ascii logo generator you will need to install:
 ```
@@ -63,7 +81,6 @@ At present, we officially aim to support the last two versions of the following 
 ├── CONTRIBUTING.md
 ├── LICENSE
 ├── README.md
-├── TEST.md
 ├── docs
 │   ├── contents.md
 │   ├── images
@@ -82,7 +99,26 @@ At present, we officially aim to support the last two versions of the following 
 │   │   ├── browser_support.md
 │   │   ├── introduction.md
 │   │   ├── license.md
-│   │   ├── project_structure.md
+│   │   ├── quick_start.md
+│   │   └── todo.md
+│   └── sections_order.json
+├── docsTest
+│   ├── contents.md
+│   ├── images
+│   │   ├── browsers
+│   │   │   ├── chrome.png
+│   │   │   ├── edge.png
+│   │   │   ├── firefox.png
+│   │   │   ├── opera.png
+│   │   │   └── safari.png
+│   │   └── screenshots
+│   │       └── placeholder.png
+│   ├── project_structure.md
+│   ├── sections
+│   │   ├── acknowledgments.md
+│   │   ├── browser_support.md
+│   │   ├── introduction.md
+│   │   ├── license.md
 │   │   ├── quick_start.md
 │   │   └── todo.md
 │   └── sections_order.json
@@ -106,10 +142,9 @@ At present, we officially aim to support the last two versions of the following 
 │   └── sections_order.json
 ├── generate.sh
 ├── main.py
-├── testRead.md
 └── troubleshooting.md
 
-10 directories, 38 files
+15 directories, 50 files
 ```
 
 # To do
