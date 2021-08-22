@@ -31,9 +31,11 @@ class DocsGeneration():
         make_copy=False,
         make_logo=False,
         example_docs=False,
+        ignore_dir_in_tree=[],
     ):
         self.docs_dir = docs_dir
         self.filename = filename
+        self.ignore_dir_in_tree = ignore_dir_in_tree
         if filepath:
             self.filepath = filepath / f"{self.filename}.md"
         else:
@@ -101,9 +103,8 @@ class DocsGeneration():
     def make_project_structure(self):
         project_structure_str = "## Project Structure\n\n"
         project_structure_str += "```"
-        tree_ignore_dirs = ["dist"]
         tree_command = ["tree", "-I"]
-        tree_command.extend(tree_ignore_dirs)
+        tree_command.extend(self.ignore_dir_in_tree)
         result = sp.run(
             tree_command,
             check=True,
@@ -171,16 +172,17 @@ def test():
     docs_dir = Path(os.getcwd()) / "docsTest"
     if docs_dir.exists():
         shutil.rmtree(docs_dir)
-    generator = DocsGeneration(docs_dir, filename="TEST.md", make_logo=True)
+    generator = DocsGeneration(docs_dir, filename="TEST", make_logo=True)
     generator.generate_file()
 
 
 @ click.command()
-@ click.option('--filename', default="README.md")
-@ click.option('--docs-dir', default="./docs", type=Path)
-@ click.option('--make-copy', default=False)
-@ click.option('--make-logo', default=False)
-@ click.option('--example-docs', default=False, help="regenerate example docs even if they exist")
+@ click.option("--filename", default="README")
+@ click.option("--docs-dir", default="./docs", type=Path)
+@ click.option("--make-copy", default=False)
+@ click.option("--make-logo", default=False)
+@ click.option("-I", "--ignore-dir-in-tree", multiple=True)
+@ click.option("--example-docs", default=False, help="regenerate example docs even if they exist")
 def main(**kwargs):
     generator = DocsGeneration(**kwargs)
     generator.generate_file()

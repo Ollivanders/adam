@@ -1,8 +1,7 @@
-## Table Of Contents
+## Contents
 
-- [Table Of Contents](#table-of-contents)
-- [Quick start](#quickstart)
+- [Quick start](#quick-start)
 - [Browser Support](#browser-support)
-- [Project Structure](#project-structure)
-- [Join the community](#jointhecommunity)
+- [To do](#to-do)
+- [Join the community](#join-the-community)
 - [License](#license)
