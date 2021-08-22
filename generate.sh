@@ -1,4 +1,7 @@
 #!/bin/sh
+#
+# Populates documentation from the docs folder,
+# DEPRECATED -----------------------------------------------------------------------------
 
 CUR_DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 MAIN_DIRECTORY="$(cd "$(dirname "$CUR_DIRECTORY")" && pwd -P)"

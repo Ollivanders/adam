@@ -7,3 +7,17 @@
 ```
 docs/generate.sh
 ```
+
+### Additional features
+
+To use the ascii logo generator you will need to install:
+```
+brew install figlet
+```
+<a href="https://formulae.brew.sh/formula/figlet"> figlet </a>
+
+To use the automated project structure generation:
+```
+brew install tree
+```
+<a href="https://formulae.brew.sh/formula/tree"> tree </a>
