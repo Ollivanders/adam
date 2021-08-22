@@ -1,48 +1,43 @@
 from distutils.dir_util import copy_tree
+import json
 import os
 from pathlib import Path
 import shutil
 import subprocess as sp
 
+import click
+
 THIS_DIR = Path(__file__).parent
 EXAMPLE_DIR = THIS_DIR / "example_docs"
 
-DEFAULT_SECTIONS = [
-    "introduction",
-    "contents",
-    "quick_start",
-    "browser_support",
-    "project_structure",
-    "todo",
-    "acknowledgments",
-    "license",
-]
+
+# do you want a contents
 
 INDEPENDENT_SECTIONS = [
     "introduction",
     "contents",
     "project_structure",
-    "logo",
+    "logo"
 ]
-
-# do you want a contents
 
 
 class DocsGeneration():
     def __init__(
-            self, docs_dir: Path,
-            filepath=None,
-            filename="README.md",
-            sections=DEFAULT_SECTIONS,
-            make_copy=False,
-            make_logo=False,
+        self,
+        docs_dir: Path = Path(os.getcwd()) / "docs",
+        filepath=None,
+        filename="README",
+        sections=None,
+        make_copy=False,
+        make_logo=False,
+        example_docs=False,
     ):
         self.docs_dir = docs_dir
         self.filename = filename
         if filepath:
-            self.filepath = filepath / self.filename
+            self.filepath = filepath / f"{self.filename}.md"
         else:
-            self.filepath = docs_dir.parents[0] / self.filename
+            self.filepath = docs_dir.parents[0] / f"{self.filename}.md"
         if self.filepath.exists() and make_copy:
             # TODO make a copy of the file
             pass
@@ -50,10 +45,32 @@ class DocsGeneration():
         self.filepath.touch(exist_ok=True)
         # read in directory and contents if it already exists
         # else create and establish, have a check from the user here though that this is defo wanted
-        self.sections = sections
+        if not self.docs_dir.exists() or example_docs:
+            self.init_docs_dir()
+
+        if sections:
+            self.sections = sections
+        else:
+            with (self.docs_dir / "sections_order.json").open() as sections_order_file:
+                section_orders = json.loads(sections_order_file.read())
+                if self.filename not in section_orders:
+                    raise Exception(
+                        f"Please add the desired sections into {self.docs_dir / 'section_order.json'} as a new key"
+                    )
+                self.sections = section_orders[self.filename]
         self.file_str = ""
         if make_logo:
             self.sections.insert(self.sections.index("introduction") + 1, "logo")
+
+    @classmethod
+    def get_file_title(cls, title_file):
+        with title_file.open() as file:
+            return file.readline().replace("#", "").strip()
+
+    @classmethod
+    def write_to_file(cls, file, contents):
+        with file.open("w") as openedfile:
+            openedfile.write(contents)
 
     @property
     def sections_dir(self):
@@ -98,11 +115,6 @@ class DocsGeneration():
         self.append_to_file_str(project_structure_str)
         self.write_to_file(self.docs_dir / "project_structure.md", project_structure_str)
 
-    @classmethod
-    def get_file_title(cls, title_file):
-        with title_file.open() as file:
-            return file.readline().replace("#", "").strip()
-
     def make_contents(self):
         contents_string = "## Contents\n\n"
 
@@ -137,11 +149,6 @@ class DocsGeneration():
         """#TODO covnerts todos into string and then writes them to the todo section"""
         pass
 
-    @ classmethod
-    def write_to_file(cls, file, contents):
-        with file.open("w") as openedfile:
-            openedfile.write(contents)
-
     def convert_internal_reference(self):
         self.file_str = self.file_str.replace("../images", f"./{self.docs_dir.stem}/images")
 
@@ -160,15 +167,24 @@ class DocsGeneration():
         self.write_to_file(self.filepath, self.file_str)
 
 
-def main():
+def test():
     docs_dir = Path(os.getcwd()) / "docsTest"
     if docs_dir.exists():
         shutil.rmtree(docs_dir)
     generator = DocsGeneration(docs_dir, filename="TEST.md", make_logo=True)
-    generator.init_docs_dir()
+    generator.generate_file()
+
+
+@ click.command()
+@ click.option('--filename', default="README.md")
+@ click.option('--docs-dir', default="./docs", type=Path)
+@ click.option('--make-copy', default=False)
+@ click.option('--make-logo', default=False)
+@ click.option('--example-docs', default=False, help="regenerate example docs even if they exist")
+def main(**kwargs):
+    generator = DocsGeneration(**kwargs)
     generator.generate_file()
 
 
 if __name__ == "__main__":
     main()
-    pass

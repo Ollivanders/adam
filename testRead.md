@@ -20,12 +20,12 @@
 | ------------ | ------ | --- |
 
 
-<img src="./docs/images/screenshots/placeholder.png" href="https://google.com" height="256">&nbsp;&nbsp;&nbsp;<img src="./docs/images/screenshots/placeholder.png" href="https://google.com" height="256">
+<img src="./docsTest/images/screenshots/placeholder.png" href="https://google.com" height="256">&nbsp;&nbsp;&nbsp;<img src="./docsTest/images/screenshots/placeholder.png" href="https://google.com" height="256">
 
 At present, we officially aim to support the last two versions of the following browsers:
 
-<img src="./docs/images/browsers/chrome.png" width="64" height="64"> <img src="./docs/images/browsers/firefox.png" width="64" height="64"> <img src="./docs/images/browsers/safari.png" width="64" height="64">
-<img src="./docs/images/browsers/edge.png" width="64" height="64"> <img src="./docs/images/browsers/opera.png" width="64" height="64">
+<img src="./docsTest/images/browsers/chrome.png" width="64" height="64"> <img src="./docsTest/images/browsers/firefox.png" width="64" height="64"> <img src="./docsTest/images/browsers/safari.png" width="64" height="64">
+<img src="./docsTest/images/browsers/edge.png" width="64" height="64"> <img src="./docsTest/images/browsers/opera.png" width="64" height="64">
 
 ## Project Structure
 
@@ -67,15 +67,15 @@ At present, we officially aim to support the last two versions of the following 
 │   │   │   └── safari.png
 │   │   └── screenshots
 │   │       └── placeholder.png
-│   ├── logo.txt
 │   ├── project_structure.md
-│   └── sections
-│       ├── acknowledgments.md
-│       ├── browser_support.md
-│       ├── introduction.md
-│       ├── license.md
-│       ├── quick_start.md
-│       └── todo.md
+│   ├── sections
+│   │   ├── acknowledgments.md
+│   │   ├── browser_support.md
+│   │   ├── introduction.md
+│   │   ├── license.md
+│   │   ├── quick_start.md
+│   │   └── todo.md
+│   └── sections_order.json
 ├── example_docs
 │   ├── images
 │   │   ├── browsers
@@ -86,18 +86,20 @@ At present, we officially aim to support the last two versions of the following 
 │   │   │   └── safari.png
 │   │   └── screenshots
 │   │       └── placeholder.png
-│   └── sections
-│       ├── acknowledgments.md
-│       ├── browser_support.md
-│       ├── introduction.md
-│       ├── license.md
-│       ├── quick_start.md
-│       └── todo.md
+│   ├── sections
+│   │   ├── acknowledgments.md
+│   │   ├── browser_support.md
+│   │   ├── introduction.md
+│   │   ├── license.md
+│   │   ├── quick_start.md
+│   │   └── todo.md
+│   └── sections_order.json
 ├── generate.sh
 ├── main.py
+├── testRead.md
 └── troubleshooting.md
 
-15 directories, 51 files
+15 directories, 53 files
 ```
 
 # To do

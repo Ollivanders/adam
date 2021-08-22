@@ -5,7 +5,11 @@
 - Use the docs/readme.sh file to specify the arrays to use in it
 
 ```
-docs/generate.sh
+# in order to generate a test example to display its use
+python3 main.py --filename testRead --docs-dir ./docsTest
+
+# to see other options
+python3 main.py 
 ```
 
 ### Additional features
