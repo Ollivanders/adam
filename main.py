@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-from distutils.dir_util import copy_tree
 import json
 import os
-from pathlib import Path
 import shutil
 import subprocess as sp
+from distutils.dir_util import copy_tree
+from pathlib import Path
 
 import click
 
@@ -25,7 +25,7 @@ INDEPENDENT_SECTIONS = [
 EXAMPLE_DOCS_URL = "https://github.com/Ollivanders/adam/trunk/example_docs"
 
 
-class DocsGeneration():
+class DocsGeneration:
     def __init__(
             self,
             docs_dir: Path,
@@ -44,14 +44,14 @@ class DocsGeneration():
             self.filepath = filepath / f"{self.filename}.md"
         else:
             self.filepath = docs_dir.parents[0] / f"{self.filename}.md"
-        if self.filepath.exists() and make_copy:
+        if self.filepath.exists() and make_copy == True:
             # TODO make a copy of the file
             pass
 
         self.filepath.touch(exist_ok=True)
         # read in directory and contents if it already exists
         # else create and establish, have a check from the user here though that this is defo wanted
-        if not self.docs_dir.exists() or example_docs:
+        if not self.docs_dir.exists() or example_docs == True:
             # TODO check user really wants to do this
             self.init_docs_dir()
 
@@ -66,7 +66,7 @@ class DocsGeneration():
                     )
                 self.sections = section_orders[self.filename]
         self.file_str = ""
-        if make_logo:
+        if make_logo == True:
             self.sections.insert(self.sections.index("introduction") + 1, "logo")
 
     @classmethod
@@ -102,10 +102,11 @@ class DocsGeneration():
     def init_docs_dir(self, use_example=True):
         if self.docs_dir.exists():
             shutil.rmtree(self.docs_dir)
-        if use_example:
+        if use_example == True:
             sp.run(
-                ["cd", str(self.docs_dir.parent), "&&", "svn", "checkout", EXAMPLE_DOCS_URL],
+                f"cd {str(self.docs_dir.parent)} && svn checkout {EXAMPLE_DOCS_URL}",
                 check=True,
+                shell=True,
             )
             os.rename(self.docs_dir.parent / "example_docs", self.docs_dir)
         # copy_tree(str(EXAMPLE_DIR), str(self.docs_dir))
@@ -115,12 +116,13 @@ class DocsGeneration():
     def make_project_structure(self):
         project_structure_str = "## Project Structure\n\n"
         project_structure_str += "```"
-        tree_command = ["tree"]
+        tree_command = "tree"
         if self.ignore_dir_in_tree:
-            tree_command.append("-I")
-            tree_command.extend(self.ignore_dir_in_tree)
+            tree_command += " -I"
+            tree_command += " '" + "|".join(self.ignore_dir_in_tree) + "'"
         result = sp.run(
-            tree_command,
+            f"cd {str(self.docs_dir.parent)} && {tree_command}",
+            shell=True,
             check=True,
             capture_output=True,
             text=True,
@@ -161,7 +163,7 @@ class DocsGeneration():
             raise Exception("independent section does not exist")
 
     def make_git_todos(self):
-        """#TODO covnerts todos into string and then writes them to the todo section"""
+        """#TODO converts todos into string and then writes them to the todo section"""
         pass
 
     def convert_internal_reference(self):
